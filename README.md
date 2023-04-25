@@ -32,6 +32,8 @@ optional arguments:
                         Path to the input sequence file in fasta format. It can be Gzip compressed (default: None)
   -o OUTPUT, --output OUTPUT
                         Path to the output file with minimizers. Results are printed on the stdout if no output is provided (default: None)
+  -t {list,fasta}, --output-type {list,fasta}
+                        The output can be formatted as a list of kmers or as a fasta file (default: list)
   -s SIZE, --size SIZE  Length of the minimizers (default: None)
   -w WINDOW, --window WINDOW
                         Size of the sliding window. It must be greater than the minimizer size (default: None)
