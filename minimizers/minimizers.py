@@ -4,8 +4,8 @@ Extract the set of minimizers from a sequence file
 """
 
 __author__ = "Fabio Cumbo (fabio.cumbo@gmail.com)"
-__version__ = "0.1.0"
-__date__ = "Apr 21, 2023"
+__version__ = "0.1.1"
+__date__ = "Apr 25, 2023"
 
 import argparse as ap
 import errno
@@ -52,6 +52,15 @@ def read_params():
             "Path to the output file with minimizers. "
             "Results are printed on the stdout if no output is provided"
         )
+    )
+    p.add_argument(
+        "-t",
+        "--output-type",
+        type=str,
+        default="list",
+        dest="output_type",
+        choices=["list", "fasta"],
+        help="The output can be formatted as a list of kmers or as a fasta file"
     )
     p.add_argument(
         "-s",
@@ -228,13 +237,28 @@ def main() -> None:
     
     with open(args.output, "w+") as output:
         if isinstance(minimizers, set):
+            if args.output_type == "fasta":
+                output.write(">{}\n".format(os.path.basename(args.input)))
+
             for mini in minimizers:
-                output.write("{}\n".format(mini))
+                output.write(
+                    "{}{}\n".format(
+                        "N" if args.output_type == "fasta" else "",
+                        mini
+                    )
+                )
         
         else:
             for record in minimizers:
+                if args.output_type == "fasta":
+                    output.write(">{}\n".format(record))
+
                 for mini in minimizers[record]:
-                    output.write("{}\t{}\n".format(record, mini))
+                    if args.output_type == "fasta":
+                        output.write("N{}\n".format(mini))
+
+                    else:
+                        output.write("{}\t{}\n".format(record, mini))
 
     t1 = time.time()
 
